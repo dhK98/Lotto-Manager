@@ -32,7 +32,6 @@ class SignupViewController: UIViewController {
     
     private var isAuth: Bool?
     
-    let titleFontSize = 20
     let labelFontSize = 17
     let guideFontSize = 14
     let trailing = -50
@@ -41,13 +40,19 @@ class SignupViewController: UIViewController {
     private let authCaller = APICaller<ResponseModel>()
     private let signupCaller = APICaller<SignupModel>()
     
+    private let validator = Validator()
+    
+    private var customNavigationBar: CustomNavigationBar?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .white
+        
+        view.backgroundColor = .white
         
         self.isAuth = false
         
-        setTitleConfig()
+        customNavigationBar = CustomNavigationBar(self,title: "회원가입")
+        customNavigationBar?.configureNavigationBar()
         
         darwSingupView()
         
@@ -70,35 +75,8 @@ class SignupViewController: UIViewController {
         self.phonenumberTextField?.delegate = self
     }
     
-    func setTitleConfig(){
-        let customTitleLabel: UILabel = UILabel()
-        customTitleLabel.text = "회원가입"
-        customTitleLabel.font = UIFont.systemFont(ofSize: CGFloat(titleFontSize), weight: .bold)
-        
-        self.navigationItem.titleView = customTitleLabel
-        
-        let leftButton: UIButton = {
-            let button: UIButton = UIButton()
-            button.setTitle("취소", for: .normal)
-            button.titleLabel?.font = UIFont.systemFont(ofSize: 15, weight: .bold)
-            button.backgroundColor = .systemTeal
-            button.frame = CGRect(x: 0, y: 0, width: 60, height: 30)
-            button.layer.cornerRadius = 6
-            return button
-        }()
-        
-        leftButton.addTarget(self, action: #selector(popSingupControllerView), for: .touchUpInside)
-        
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(customView: leftButton)
-        self.navigationItem.leftBarButtonItem?.width = 80
-    }
-    
     @objc func handleTap(_ recognizer: UITapGestureRecognizer) {
         self.view.endEditing(true)
-    }
-    
-    @objc func popSingupControllerView(){
-        self.navigationController?.popViewController(animated: false)
     }
     
     func darwSingupView(){
@@ -166,7 +144,41 @@ class SignupViewController: UIViewController {
         return nil
     }
     
+    func isEnableSignupButton(){
+        if self.emailValidation && self.passwordValidation && self.passwordCheckValidation && self.nameValidation && self.isAuth!{
+            self.signupButton?.isEnabled = true
+        } else {
+            self.signupButton?.isEnabled = false
+        }
+    }
+    
+    func validatePhonenumber(){
+        if let phonenumber: String = self.phonenumberTextField!.text {
+            phonenumberValidation = self.validator.validatePhonenumber(phonenumber: phonenumber)
+        }
+        if !phonenumberValidation {
+            self.phonenumberGuideLabel?.isHidden = false
+            self.requestAuthButton?.isEnabled = false
+        } else {
+            self.phonenumberGuideLabel?.isHidden = true
+            self.requestAuthButton?.isEnabled = true
+        }
+    }
+    
+    func validateAuthnumber(){
+        guard let authnumber = self.authnumberTextField?.text else {return}
+        authnumberValidation = self.validator.isNumericSixDigit(authnumber)
+        if !authnumberValidation {
+            self.authnumberGuideLabel?.isHidden = false
+            self.checkAuthnumberButton?.isEnabled = false
+        } else {
+            self.authnumberGuideLabel?.isHidden = true
+            self.checkAuthnumberButton?.isEnabled = true
+        }
+    }
+    
     @objc func checkAuth(_ sender: UIButton){
+        self.validateAuthnumber()
         if !authnumberValidation || isAuth! {
             return
         }
@@ -174,7 +186,8 @@ class SignupViewController: UIViewController {
         guard let phonenumber = phonenumberTextField?.text else {return}
         guard let authnumber = authnumberTextField?.text else {return}
         
-        self.authCaller.callAPI(endpoint: AppConfig.phoneAuthCheck, method: .post, parameters: ["phonenumber": phonenumber, "authnumber": authnumber]){result in
+        self.authCaller.callAPI(endpoint: AppConfig.phoneAuthCheck, method: .post, parameters: ["phonenumber": phonenumber, "authnumber": authnumber], isAuth: false ){result in
+            
             switch result {
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -184,7 +197,6 @@ class SignupViewController: UIViewController {
             case .success(let res):
                 DispatchQueue.main.async {
                     if res.message{
-                        
                         self.isAuth = true
                         self.authnumberTextField?.removeFromSuperview()
                         self.checkAuthnumberButton?.removeFromSuperview()
@@ -193,6 +205,7 @@ class SignupViewController: UIViewController {
                         self.checkAuthnumberButton = nil
                         self.authnumberGuideLabel = nil
                         self.requestAuthButton?.setTitle("인증완료", for: .normal)
+                        self.isEnableSignupButton()
                     }else {
                         Alert.createNotificationAlert(self, title: "인증번호가 다릅니다.")
                     }
@@ -205,14 +218,63 @@ class SignupViewController: UIViewController {
     
     @objc func signup(_ sender:UIButton){
         // call signup API
-    }
-    
-    func isNumericSixDigit(_ input: String) -> Bool {
-        // 입력된 문자열이 6자리 숫자로 이루어진지 확인
-        let numericCharacterSet = CharacterSet.decimalDigits
-        let inputCharacterSet = CharacterSet(charactersIn: input)
-        
-        return inputCharacterSet.isSubset(of: numericCharacterSet) && input.count == 6
+        let parameters: [String:AnyHashable] = [
+            "email":self.emailTextField!.text as AnyHashable,
+            "password":self.passwordTextField!.text as AnyHashable,
+            "name":self.nameTextField!.text as AnyHashable,
+            "phonenumber":self.phonenumberTextField!.text as AnyHashable,
+        ]
+        self.signupCaller.callAPI(endpoint: AppConfig.signupURL, method: .post, parameters: parameters, isAuth: false){ result in
+            switch result {
+            case .failure(let error):
+                switch error {
+                case let .invalidStatusCode(statusCode, message):
+                    if statusCode == 409 {
+                        if message == "already exist account" {
+                            DispatchQueue.main.async {
+                                Alert.createNotificationAlert(self, title: "이미 가입되어 있는 이메일입니다.", message: error.localizedDescription)
+                            }
+                            return
+                        } else if message == "already exist name" {
+                            DispatchQueue.main.async {
+                                Alert.createNotificationAlert(self, title: "이미 존재하는 이름 입니다.", message: error.localizedDescription)
+                            }
+                            return
+                        } else if message == "already exist phonenumber"{
+                            DispatchQueue.main.async {
+                                Alert.createNotificationAlert(self, title: "이미 가입되어 있는 휴대폰번호입니다.", message: error.localizedDescription)
+                                self.phonenumberTextField?.isEnabled = true
+                                self.phonenumberTextField?.backgroundColor = .white
+                                self.isAuth = false
+                                self.requestAuthButton?.setTitle("인증", for: .normal)
+                            }
+                            return
+                        }
+                    } else {
+                        DispatchQueue.main.async {
+                            Alert.createNotificationAlert(self, title: "네트워크 상태를 확인해주세요.", message: error.localizedDescription)
+                        }
+                        return
+                    }
+                default:
+                    DispatchQueue.main.async {
+                        Alert.createNotificationAlert(self, title: "네트워크 상태를 확인해주세요.", message: error.localizedDescription)
+                    }
+                    return
+                }
+                
+            case .success(let model):
+                DispatchQueue.main.async {
+                    let alert = UIAlertController(title: "\(model.name)님 회원가입을 환영합니다. 로그인을 해주세요.", message: nil, preferredStyle: .alert)
+                    let alertAction = UIAlertAction(title: "확인", style: .default){_ in
+                        self.navigationController?.popViewController(animated: true)
+                    }
+                    alert.addAction(alertAction)
+                    self.present(alert, animated: true)
+                }
+                break
+            }
+        }
     }
 }
 
@@ -220,9 +282,8 @@ class SignupViewController: UIViewController {
 extension SignupViewController {
     
     @objc func requestAuth(_ sender: UIButton){
-        // 휴대폰 번호 유효성 검증 => textfild did enditing 으로 변수 조절 확인된 변수로 확인
-        if !phonenumberValidation {
-            self.phonenumberGuideLabel?.isHidden = false
+        validatePhonenumber()
+        if !self.phonenumberValidation {
             return
         }
         // phonenumberTextField 편집 불가 상태 전환
@@ -230,11 +291,9 @@ extension SignupViewController {
         self.phonenumberTextField?.backgroundColor = .systemGray6
         
         guard let phonenumber = phonenumberTextField?.text else {return}
-        self.authCaller.callAPI(endpoint: AppConfig.phoneAuthRequest, method: .post, parameters: ["phonenumber": phonenumber as AnyHashable]) { result in
+        self.authCaller.callAPI(endpoint: AppConfig.phoneAuthRequest, method: .post, parameters: ["phonenumber": phonenumber as AnyHashable], isAuth: false) { result in
             switch result {
             case .failure(let error):
-//                print("error: \(error.localizedDescription)")
-//                print("error: \(error.self)")
                 DispatchQueue.main.async {
                     Alert.createNotificationAlert(self, title: "잠시후 다시 시도해주세요.", message: error.localizedDescription)
                 }
@@ -257,6 +316,7 @@ extension SignupViewController {
                         textField.layer.cornerRadius = 6
                         textField.layer.borderColor = UIColor.gray.cgColor
                         textField.addLeftPadding()
+                        textField.keyboardType = .numberPad
                         return textField
                     }()
                     
@@ -319,7 +379,6 @@ extension SignupViewController {
             let label: UILabel = UILabel()
             label.text = "이메일"
             label.font = UIFont.systemFont(ofSize: CGFloat(labelFontSize), weight: .light)
-            label.textColor = .lightGray
             return label
         }()
         
@@ -354,7 +413,9 @@ extension SignupViewController {
             textField.layer.borderWidth = 1
             textField.layer.cornerRadius = 6
             textField.layer.borderColor = UIColor.gray.cgColor
+            textField.autocorrectionType = .no
             textField.addLeftPadding()
+            textField.keyboardType = .emailAddress
             return textField
         }()
         
@@ -405,7 +466,6 @@ extension SignupViewController {
             let label: UILabel = UILabel()
             label.text = "패스워드"
             label.font = UIFont.systemFont(ofSize: CGFloat(labelFontSize), weight: .light)
-            label.textColor = .lightGray
             return label
         }()
         
@@ -443,6 +503,10 @@ extension SignupViewController {
             textField.layer.cornerRadius = 6
             textField.layer.borderColor = UIColor.gray.cgColor
             textField.addLeftPadding()
+            textField.isSecureTextEntry = true
+            if #available(iOS 12.0, *) {
+                textField.textContentType = .oneTimeCode
+            }
             return textField
         }()
         
@@ -493,7 +557,6 @@ extension SignupViewController {
             let label: UILabel = UILabel()
             label.text = "패스워드 확인"
             label.font = UIFont.systemFont(ofSize: CGFloat(labelFontSize), weight: .light)
-            label.textColor = .lightGray
             return label
         }()
         
@@ -531,6 +594,10 @@ extension SignupViewController {
             textField.layer.cornerRadius = 6
             textField.layer.borderColor = UIColor.gray.cgColor
             textField.addLeftPadding()
+            textField.isSecureTextEntry = true
+            if #available(iOS 12.0, *) {
+                textField.textContentType = .oneTimeCode
+            }
             return textField
         }()
         
@@ -581,7 +648,6 @@ extension SignupViewController {
             let label: UILabel = UILabel()
             label.text = "어플리케이션 사용자 이름"
             label.font = UIFont.systemFont(ofSize: CGFloat(labelFontSize), weight: .light)
-            label.textColor = .lightGray
             return label
         }()
         
@@ -669,7 +735,6 @@ extension SignupViewController {
             let label: UILabel = UILabel()
             label.text = "휴대폰번호"
             label.font = UIFont.systemFont(ofSize: CGFloat(labelFontSize), weight: .light)
-            label.textColor = .lightGray
             return label
         }()
         
@@ -707,6 +772,7 @@ extension SignupViewController {
             textField.layer.cornerRadius = 6
             textField.layer.borderColor = UIColor.gray.cgColor
             textField.addLeftPadding()
+            textField.keyboardType = .numberPad
             return textField
         }()
         
@@ -803,26 +869,37 @@ extension SignupViewController: UITextFieldDelegate {
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         textField.layer.borderColor = UIColor.gray.cgColor
-        if textField == self.emailTextField{
-            let emailRegEX = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
-            let emailTest = NSPredicate(format: "SELF MATCHES %@", emailRegEX)
-            emailValidation = emailTest.evaluate(with: emailTextField?.text)
-            
+        if textField == self.emailTextField{    
+            if let email: String = self.emailTextField!.text {
+                emailValidation = self.validator.validateEmail(email: email)
+            }
             if !emailValidation {
                 self.emailGuideLabel?.isHidden = false
             } else {
                 self.emailGuideLabel?.isHidden = true
             }
         } else if textField == self.passwordTextField {
-            let passwordRegEX = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,}$"
-            let passwordTest = NSPredicate(format: "SELF MATCHES %@", passwordRegEX)
-            passwordValidation = passwordTest.evaluate(with: passwordTextField?.text)
-            
+            if let password: String = self.passwordTextField!.text {
+                passwordValidation = self.validator.validatePassword(password: password)
+            }
             if !passwordValidation {
                 self.passwordGuideLabel?.isHidden = false
             } else {
                 self.passwordGuideLabel?.isHidden = true
             }
+            
+            if !self.passwordCheckTextField!.text!.isEmpty && !self.isSameTextBothTextField(self.passwordTextField!, self.passwordCheckTextField!) {
+                passwordCheckValidation = false
+            } else {
+                passwordCheckValidation = true
+            }
+            
+            if !passwordCheckValidation {
+                self.passwordCheckGuideLabel?.isHidden = false
+            } else {
+                self.passwordCheckGuideLabel?.isHidden = true
+            }
+            
         } else if textField == self.passwordCheckTextField {
             passwordCheckValidation = isSameTextBothTextField(self.passwordTextField!, self.passwordCheckTextField!)
             
@@ -833,9 +910,9 @@ extension SignupViewController: UITextFieldDelegate {
             }
             
         } else if textField == self.nameTextField {
-            let nameRegEX = "^[ㄱ-ㅎ가-힣a-zA-Z0-9]+$"
-            let nameTest = NSPredicate(format: "SELF MATCHES %@", nameRegEX)
-            nameValidation = nameTest.evaluate(with: nameTextField?.text)
+            if let name: String = self.nameTextField!.text {
+                nameValidation = self.validator.validateName(name: name)
+            }
             
             if !nameValidation {
                 self.nameGuideLabel?.isHidden = false
@@ -844,33 +921,12 @@ extension SignupViewController: UITextFieldDelegate {
             }
             
         } else if textField == self.phonenumberTextField {
-            let phoneNumberRegEX = "^\\d{11}$"
-            let phoneTest = NSPredicate(format: "SELF MATCHES %@", phoneNumberRegEX)
-            phonenumberValidation = phoneTest.evaluate(with: phonenumberTextField?.text)
+            validatePhonenumber()
             
-            if !phonenumberValidation {
-                self.phonenumberGuideLabel?.isHidden = false
-                self.requestAuthButton?.isEnabled = false
-            } else {
-                self.phonenumberGuideLabel?.isHidden = true
-                self.requestAuthButton?.isEnabled = true
-            }
         } else if textField == self.authnumberTextField {
-            guard let authnumber = self.authnumberTextField?.text else {return}
-            authnumberValidation = isNumericSixDigit(authnumber)
-            if !authnumberValidation {
-                self.authnumberGuideLabel?.isHidden = false
-                self.checkAuthnumberButton?.isEnabled = false
-            } else {
-                self.authnumberGuideLabel?.isHidden = true
-                self.checkAuthnumberButton?.isEnabled = true
-            }
+            self.validateAuthnumber()
         }
-        if emailValidation && passwordValidation && passwordCheckValidation && nameValidation && isAuth!{
-            self.signupButton?.isEnabled = true
-        } else {
-            self.signupButton?.isEnabled = false
-        }
+        self.isEnableSignupButton()
         
     }
     

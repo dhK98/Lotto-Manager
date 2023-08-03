@@ -5,10 +5,12 @@ class APICaller<Model: Decodable> {
     
     let decoder = JSONDecoder()
     
-    func callAPI(endpoint: String, method: HTTPMethod, parameters: [String: AnyHashable] = [:], completion: @escaping (Result<Model,Error>) -> Void){
+    var refresh_token: String?
+    
+    func callAPI(endpoint: String, method: HTTPMethod, parameters: [String: AnyHashable] = [:],  existRefreshToken: Bool = false, isAuth: Bool = true, completion: @escaping (Result<Model,CustomError>) -> Void){
         
         guard var urlComponents = URLComponents(string: baseURL + endpoint) else {
-            completion(.failure(NetworkError.invalidURL))
+            completion(.failure(CustomError.invalidURL))
             return
         }
         
@@ -17,7 +19,7 @@ class APICaller<Model: Decodable> {
         }
         
         guard let url = urlComponents.url else {
-            completion(.failure(NetworkError.invalidURL))
+            completion(.failure(CustomError.invalidURL))
             return
         }
         
@@ -30,32 +32,48 @@ class APICaller<Model: Decodable> {
                 request.httpBody = try JSONSerialization.data(withJSONObject: parameters)
                 request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             } catch {
-                completion(.failure(error))
+                completion(.failure(.networkError(error)))
                 return
             }
         }
         
-        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+        let sessionConfig = URLSessionConfiguration.default
+        sessionConfig.timeoutIntervalForRequest = 30 // 30초로 설정
+        
+        let task = URLSession(configuration: sessionConfig).dataTask(with: request) { (data, response, error) in
             if let error = error {
-                completion(.failure(error))
+                completion(.failure(.networkError(error)))
                 return
             }
             
             if let httpResponse = response as? HTTPURLResponse, !(200...299).contains(httpResponse.statusCode) {
-                completion(.failure(NetworkError.invalidStatusCode(httpResponse.statusCode)))
-                return
+                if let jsonErrorData = data,
+                   let errorJSON = try? JSONSerialization.jsonObject(with: jsonErrorData, options: []) as? [String: Any],
+                   let errorMessage = errorJSON["message"] as? String{
+                    completion(.failure(.invalidStatusCode(httpResponse.statusCode, errorMessage)))
+                    return
+                }
             }
             
             guard let data = data else {
-                completion(.failure(NetworkError.noData))
+                completion(.failure(CustomError.noData))
                 return
             }
-            
+
             do {
                 let model = try self.decoder.decode(Model.self, from: data)
+                if existRefreshToken {
+                    if let httpResponse = response as? HTTPURLResponse, let fields = httpResponse.allHeaderFields as? [String : String] {
+                        // 쿠키 저장하기
+                        let cookies = HTTPCookie.cookies(withResponseHeaderFields: fields, for: response!.url!)
+                        if let session = cookies.filter({$0.name == "refreshToken"}).first {
+                            UserDefaults.standard.set(session.value, forKey: UserDefaults.userRefreshTokenKey)
+                        }
+                    }
+                }
                 completion(.success(model))
             } catch {
-                completion(.failure(error))
+                completion(.failure(.decodingError(error)))
             }
         }
         
@@ -63,10 +81,13 @@ class APICaller<Model: Decodable> {
     }
 }
 
-enum NetworkError: Error {
+enum CustomError: Error {
     case invalidURL
-    case invalidStatusCode(Int)
+    case invalidStatusCode(Int,String)
     case noData
+    case unauthorized
+    case networkError(Error)
+    case decodingError(Error)
 }
 
 enum HTTPMethod: String {

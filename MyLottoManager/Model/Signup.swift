@@ -1,10 +1,3 @@
-//
-//  Signup.swift
-//  MyLottoManager
-//
-//  Created by 김도현 on 2023/07/25.
-//
-
 import Foundation
 
 struct SignupModel: Decodable{

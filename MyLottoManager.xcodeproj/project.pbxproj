@@ -7,13 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		760F2D8A2A72573D00515C8D /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 760F2D892A72573D00515C8D /* Login.swift */; };
+		760F2D8C2A725BA200515C8D /* Validator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 760F2D8B2A725BA200515C8D /* Validator.swift */; };
 		761AE91D2A69112D009907B9 /* APICaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761AE91C2A69112D009907B9 /* APICaller.swift */; };
 		761AE9202A6911C2009907B9 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761AE91F2A6911C2009907B9 /* AppConfig.swift */; };
+		768787932A73B6200007EC8D /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 768787922A73B6200007EC8D /* MainViewController.swift */; };
+		769965A92A7A24950024FE6E /* FindUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769965A82A7A24950024FE6E /* FindUserViewController.swift */; };
+		769965AB2A7A2AEB0024FE6E /* CustomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769965AA2A7A2AEB0024FE6E /* CustomNavigationBar.swift */; };
+		769A2B062A74D2CC00BF86D6 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769A2B052A74D2CC00BF86D6 /* Keychain.swift */; };
 		76A92C192A5DA4D9009B5CD1 /* SignupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A92C182A5DA4D9009B5CD1 /* SignupViewController.swift */; };
 		76ADCB5A2A6FB38B007C39C8 /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76ADCB592A6FB38B007C39C8 /* Alert.swift */; };
 		76ADCB5D2A6FBBEC007C39C8 /* UserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76ADCB5C2A6FBBEC007C39C8 /* UserInfo.swift */; };
 		76ADCB5F2A6FBC9D007C39C8 /* Signup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76ADCB5E2A6FBC9D007C39C8 /* Signup.swift */; };
 		76BD8B322A6E353B0087E31E /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76BD8B312A6E353B0087E31E /* Response.swift */; };
+		76E0EBFC2A778D3E00F5C4B8 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76E0EBFB2A778D3E00F5C4B8 /* UserDefaults.swift */; };
 		76E2B2372A53A796009333A9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76E2B2362A53A796009333A9 /* AppDelegate.swift */; };
 		76E2B2392A53A796009333A9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76E2B2382A53A796009333A9 /* SceneDelegate.swift */; };
 		76E2B23B2A53A796009333A9 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76E2B23A2A53A796009333A9 /* LoginViewController.swift */; };
@@ -44,13 +51,20 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		760F2D892A72573D00515C8D /* Login.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
+		760F2D8B2A725BA200515C8D /* Validator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Validator.swift; sourceTree = "<group>"; };
 		761AE91C2A69112D009907B9 /* APICaller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICaller.swift; sourceTree = "<group>"; };
 		761AE91F2A6911C2009907B9 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
+		768787922A73B6200007EC8D /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		769965A82A7A24950024FE6E /* FindUserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindUserViewController.swift; sourceTree = "<group>"; };
+		769965AA2A7A2AEB0024FE6E /* CustomNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationBar.swift; sourceTree = "<group>"; };
+		769A2B052A74D2CC00BF86D6 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		76A92C182A5DA4D9009B5CD1 /* SignupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupViewController.swift; sourceTree = "<group>"; };
 		76ADCB592A6FB38B007C39C8 /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
 		76ADCB5C2A6FBBEC007C39C8 /* UserInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfo.swift; sourceTree = "<group>"; };
 		76ADCB5E2A6FBC9D007C39C8 /* Signup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Signup.swift; sourceTree = "<group>"; };
 		76BD8B312A6E353B0087E31E /* Response.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Response.swift; sourceTree = "<group>"; };
+		76E0EBFB2A778D3E00F5C4B8 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		76E2B2332A53A796009333A9 /* MyLottoManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyLottoManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		76E2B2362A53A796009333A9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		76E2B2382A53A796009333A9 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -105,6 +119,10 @@
 			children = (
 				761AE91C2A69112D009907B9 /* APICaller.swift */,
 				76ADCB592A6FB38B007C39C8 /* Alert.swift */,
+				760F2D8B2A725BA200515C8D /* Validator.swift */,
+				769A2B052A74D2CC00BF86D6 /* Keychain.swift */,
+				76E0EBFB2A778D3E00F5C4B8 /* UserDefaults.swift */,
+				769965AA2A7A2AEB0024FE6E /* CustomNavigationBar.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -179,6 +197,7 @@
 			children = (
 				76BD8B312A6E353B0087E31E /* Response.swift */,
 				76ADCB5E2A6FBC9D007C39C8 /* Signup.swift */,
+				760F2D892A72573D00515C8D /* Login.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -195,6 +214,8 @@
 			children = (
 				76E2B23A2A53A796009333A9 /* LoginViewController.swift */,
 				76A92C182A5DA4D9009B5CD1 /* SignupViewController.swift */,
+				768787922A73B6200007EC8D /* MainViewController.swift */,
+				769965A82A7A24950024FE6E /* FindUserViewController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -333,14 +354,21 @@
 				76ADCB5A2A6FB38B007C39C8 /* Alert.swift in Sources */,
 				76E2B23B2A53A796009333A9 /* LoginViewController.swift in Sources */,
 				76BD8B322A6E353B0087E31E /* Response.swift in Sources */,
+				760F2D8A2A72573D00515C8D /* Login.swift in Sources */,
+				76E0EBFC2A778D3E00F5C4B8 /* UserDefaults.swift in Sources */,
 				76E2B2372A53A796009333A9 /* AppDelegate.swift in Sources */,
 				76A92C192A5DA4D9009B5CD1 /* SignupViewController.swift in Sources */,
 				761AE91D2A69112D009907B9 /* APICaller.swift in Sources */,
+				768787932A73B6200007EC8D /* MainViewController.swift in Sources */,
 				761AE9202A6911C2009907B9 /* AppConfig.swift in Sources */,
 				76E2B2412A53A796009333A9 /* MyLottoManager.xcdatamodeld in Sources */,
 				76ADCB5F2A6FBC9D007C39C8 /* Signup.swift in Sources */,
+				769965AB2A7A2AEB0024FE6E /* CustomNavigationBar.swift in Sources */,
 				76ADCB5D2A6FBBEC007C39C8 /* UserInfo.swift in Sources */,
+				769965A92A7A24950024FE6E /* FindUserViewController.swift in Sources */,
 				76E2B2392A53A796009333A9 /* SceneDelegate.swift in Sources */,
+				760F2D8C2A725BA200515C8D /* Validator.swift in Sources */,
+				769A2B062A74D2CC00BF86D6 /* Keychain.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -517,13 +545,15 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XUPBR6WWRV;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MyLottoManager/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -544,13 +574,15 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = XUPBR6WWRV;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MyLottoManager/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
