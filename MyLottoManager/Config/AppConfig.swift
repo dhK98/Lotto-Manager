@@ -11,4 +11,6 @@ class AppConfig {
     static let phoneAuthRequest = "/auth/request"
     static let phoneAuthCheck = "/auth/check"
     static let signupURL = "/user"
+    static let findEmail = "/user/email"
+    static let updatePassword = "user/password"
 }

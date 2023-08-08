@@ -44,6 +44,8 @@ class SignupViewController: UIViewController {
     
     private var customNavigationBar: CustomNavigationBar?
     
+    private var keyboardAdjustments: KeyboardAdjustments?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -61,12 +63,22 @@ class SignupViewController: UIViewController {
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         self.view.addGestureRecognizer(tapRecognizer)
         
+        keyboardAdjustments = KeyboardAdjustments(view: self.view)
+        
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
         
         self.signupButton?.addTarget(self, action: #selector(signup), for: .touchUpInside)
     }
     
+    @objc func keyboardWillShow(_ notification: Notification) {
+        keyboardAdjustments!.keyboardWillShow(notification)
+    }
+    
+    @objc func keyboardWillHide(_ notification: Notification) {
+        keyboardAdjustments!.keyboardWillHide(notification)
+    }
     func setTextFieldDelegate(){
         self.emailTextField?.delegate = self
         self.passwordTextField?.delegate = self
@@ -98,51 +110,6 @@ class SignupViewController: UIViewController {
         createSignupButton()
     }
     
-    @objc func keyboardWillShow(_ notification: Notification) {
-        if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-            let keyboardHeight = keyboardFrame.cgRectValue.height
-            
-            // 현재 선택된 텍스트 필드를 알아냅니다.
-            if let activeTextField = findActiveTextField() {
-                // 텍스트 필드가 화면에 표시되는 영역 계산
-                let textFieldFrame = activeTextField.convert(activeTextField.bounds, to: self.view)
-                let visibleAreaHeight = self.view.frame.height - keyboardHeight
-                
-                // 텍스트 필드가 키보드와 겹친다면 뷰를 올려줍니다.
-                if textFieldFrame.maxY > visibleAreaHeight {
-                    let offset = textFieldFrame.maxY - visibleAreaHeight + 50
-                    animateViewMoving(up: true, offset: offset)
-                } else {
-                    // 텍스트 필드가 키보드와 겹치지 않는다면 뷰를 원래 위치로 복원합니다.
-                    animateViewMoving(up: false, offset: 0)
-                }
-            }
-        }
-    }
-    
-    @objc func keyboardWillHide(_ notification: Notification) {
-        // 키보드가 사라질 때 뷰를 원래 위치로 복원합니다.
-        animateViewMoving(up: false, offset: 0)
-    }
-    
-    // 뷰의 위치를 변경하는 메서드
-    func animateViewMoving(up: Bool, offset: CGFloat) {
-        let duration = 0.3
-        UIView.animate(withDuration: duration) {
-            self.view.frame.origin.y = up ? -offset : 0
-        }
-    }
-    
-    // 현재 선택된 텍스트 필드를 찾는 메서드
-    func findActiveTextField() -> UITextField? {
-        // 해당 뷰 컨트롤러 내에서 UITextField에 firstResponder가 된 것을 찾아 반환합니다.
-        for view in self.view.subviews {
-            if let textField = view as? UITextField, textField.isFirstResponder {
-                return textField
-            }
-        }
-        return nil
-    }
     
     func isEnableSignupButton(){
         if self.emailValidation && self.passwordValidation && self.passwordCheckValidation && self.nameValidation && self.isAuth!{
@@ -186,7 +153,13 @@ class SignupViewController: UIViewController {
         guard let phonenumber = phonenumberTextField?.text else {return}
         guard let authnumber = authnumberTextField?.text else {return}
         
-        self.authCaller.callAPI(endpoint: AppConfig.phoneAuthCheck, method: .post, parameters: ["phonenumber": phonenumber, "authnumber": authnumber], isAuth: false ){result in
+        let parameters: [String: AnyHashable] = [
+            "phonenumber": phonenumber as AnyHashable,
+            "authnumber": authnumber as AnyHashable,
+            "type": AuthType.SIGNUP.authTypeDescription as AnyHashable,
+        ]
+        
+        self.authCaller.callAPI(endpoint: AppConfig.phoneAuthCheck, method: .post, parameters: parameters, isAuth: false ){result in
             
             switch result {
             case .failure(let error):
@@ -291,13 +264,28 @@ extension SignupViewController {
         self.phonenumberTextField?.backgroundColor = .systemGray6
         
         guard let phonenumber = phonenumberTextField?.text else {return}
-        self.authCaller.callAPI(endpoint: AppConfig.phoneAuthRequest, method: .post, parameters: ["phonenumber": phonenumber as AnyHashable], isAuth: false) { result in
+        
+        let parameters: [String: AnyHashable] = [
+            "phonenumber": phonenumber as AnyHashable,
+            "type": AuthType.SIGNUP.authTypeDescription as AnyHashable,
+        ]
+        
+        self.authCaller.callAPI(endpoint: AppConfig.phoneAuthRequest, method: .post, parameters: parameters, isAuth: false) { result in
             switch result {
             case .failure(let error):
-                DispatchQueue.main.async {
-                    Alert.createNotificationAlert(self, title: "잠시후 다시 시도해주세요.", message: error.localizedDescription)
+                switch error {
+                case let .invalidStatusCode(statusCode, _):
+//                    print("statusCode: \(statusCode)")
+//                    print("message: \(message)")
+                    if statusCode == 400 {
+                        print("인증 타입 오류")
+                    }
+                    return
+                default:
+                    print("default error: \(error)")
+                    return
                 }
-                break
+
             case .success(_):
                 DispatchQueue.main.async {
                     Alert.createNotificationAlert(self, title: "인증번호가 전송되었습니다.")
@@ -869,7 +857,7 @@ extension SignupViewController: UITextFieldDelegate {
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         textField.layer.borderColor = UIColor.gray.cgColor
-        if textField == self.emailTextField{    
+        if textField == self.emailTextField{
             if let email: String = self.emailTextField!.text {
                 emailValidation = self.validator.validateEmail(email: email)
             }
