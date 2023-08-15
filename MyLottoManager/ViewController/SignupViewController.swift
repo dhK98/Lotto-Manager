@@ -919,7 +919,7 @@ extension SignupViewController: UITextFieldDelegate {
     }
     
     func isSameTextBothTextField(_ first: UITextField, _ second: UITextField) -> Bool{
-        if first.text == second.text && !(first.text?.isEmpty ?? false) {
+        if first.text == second.text && !(first.text?.isEmpty ?? true) {
             return true
         }
         return false
