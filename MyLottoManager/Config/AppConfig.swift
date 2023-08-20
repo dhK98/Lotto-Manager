@@ -7,6 +7,8 @@ class AppConfig {
 //    static let appURL = "http://172.20.10.2:8080"
     // WiFI
 //    static let appURL = "http://192.168.45.62:8080"
+    // Home
+//    static let appURL = "http://192.168.55.130:8080"
     static let loginURL = "/auth/login"
     static let phoneAuthRequest = "/auth/request"
     static let phoneAuthCheck = "/auth/check"

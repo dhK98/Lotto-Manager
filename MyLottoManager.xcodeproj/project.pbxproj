@@ -11,8 +11,11 @@
 		760F2D8C2A725BA200515C8D /* Validator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 760F2D8B2A725BA200515C8D /* Validator.swift */; };
 		761AE91D2A69112D009907B9 /* APICaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761AE91C2A69112D009907B9 /* APICaller.swift */; };
 		761AE9202A6911C2009907B9 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761AE91F2A6911C2009907B9 /* AppConfig.swift */; };
+		762A4D9D2A924054004C17F1 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762A4D9C2A924054004C17F1 /* HomeViewController.swift */; };
+		762A4D9F2A924064004C17F1 /* LottoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762A4D9E2A924064004C17F1 /* LottoViewController.swift */; };
+		762A4DA12A924071004C17F1 /* MySettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 762A4DA02A924071004C17F1 /* MySettingViewController.swift */; };
 		764D869B2A7E27A5003C5B05 /* AuthType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 764D869A2A7E27A5003C5B05 /* AuthType.swift */; };
-		768787932A73B6200007EC8D /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 768787922A73B6200007EC8D /* MainViewController.swift */; };
+		768787932A73B6200007EC8D /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 768787922A73B6200007EC8D /* MainTabBarController.swift */; };
 		769965A92A7A24950024FE6E /* FindUserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769965A82A7A24950024FE6E /* FindUserViewController.swift */; };
 		769965AB2A7A2AEB0024FE6E /* CustomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769965AA2A7A2AEB0024FE6E /* CustomNavigationBar.swift */; };
 		769A2B062A74D2CC00BF86D6 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 769A2B052A74D2CC00BF86D6 /* Keychain.swift */; };
@@ -57,8 +60,11 @@
 		760F2D8B2A725BA200515C8D /* Validator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Validator.swift; sourceTree = "<group>"; };
 		761AE91C2A69112D009907B9 /* APICaller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICaller.swift; sourceTree = "<group>"; };
 		761AE91F2A6911C2009907B9 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
+		762A4D9C2A924054004C17F1 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		762A4D9E2A924064004C17F1 /* LottoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottoViewController.swift; sourceTree = "<group>"; };
+		762A4DA02A924071004C17F1 /* MySettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MySettingViewController.swift; sourceTree = "<group>"; };
 		764D869A2A7E27A5003C5B05 /* AuthType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthType.swift; sourceTree = "<group>"; };
-		768787922A73B6200007EC8D /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		768787922A73B6200007EC8D /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		769965A82A7A24950024FE6E /* FindUserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindUserViewController.swift; sourceTree = "<group>"; };
 		769965AA2A7A2AEB0024FE6E /* CustomNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationBar.swift; sourceTree = "<group>"; };
 		769A2B052A74D2CC00BF86D6 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
@@ -220,8 +226,11 @@
 			children = (
 				76E2B23A2A53A796009333A9 /* LoginViewController.swift */,
 				76A92C182A5DA4D9009B5CD1 /* SignupViewController.swift */,
-				768787922A73B6200007EC8D /* MainViewController.swift */,
+				768787922A73B6200007EC8D /* MainTabBarController.swift */,
 				769965A82A7A24950024FE6E /* FindUserViewController.swift */,
+				762A4D9C2A924054004C17F1 /* HomeViewController.swift */,
+				762A4D9E2A924064004C17F1 /* LottoViewController.swift */,
+				762A4DA02A924071004C17F1 /* MySettingViewController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -362,12 +371,15 @@
 				76E2B23B2A53A796009333A9 /* LoginViewController.swift in Sources */,
 				76BD8B322A6E353B0087E31E /* Response.swift in Sources */,
 				760F2D8A2A72573D00515C8D /* Login.swift in Sources */,
+				762A4D9D2A924054004C17F1 /* HomeViewController.swift in Sources */,
+				762A4DA12A924071004C17F1 /* MySettingViewController.swift in Sources */,
 				76E0EBFC2A778D3E00F5C4B8 /* UserDefaults.swift in Sources */,
 				76E2B2372A53A796009333A9 /* AppDelegate.swift in Sources */,
 				76D83B312A823929003E7AF5 /* FindEmail.swift in Sources */,
+				762A4D9F2A924064004C17F1 /* LottoViewController.swift in Sources */,
 				76A92C192A5DA4D9009B5CD1 /* SignupViewController.swift in Sources */,
 				761AE91D2A69112D009907B9 /* APICaller.swift in Sources */,
-				768787932A73B6200007EC8D /* MainViewController.swift in Sources */,
+				768787932A73B6200007EC8D /* MainTabBarController.swift in Sources */,
 				761AE9202A6911C2009907B9 /* AppConfig.swift in Sources */,
 				76DC4BC22A7D1C7B00240078 /* KeyboardAdjustments.swift in Sources */,
 				76E2B2412A53A796009333A9 /* MyLottoManager.xcdatamodeld in Sources */,

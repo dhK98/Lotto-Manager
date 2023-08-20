@@ -94,9 +94,6 @@ class FindUserViewController: UIViewController {
     private var isValidatePassword = false
     private var isValidateCheckPassword = false
     
-    private let authCaller = APICaller<ResponseModel>()
-    private let findEmailCaller = APICaller<FindEmailModel>()
-    
     private var phonenumber: String?
     
     override func viewDidLoad() {
@@ -499,7 +496,7 @@ extension FindUserViewController {
             "phonenumber": phonenumber as AnyHashable,
             "type": type.authTypeDescription as AnyHashable
         ]
-        authCaller.callAPI(endpoint: AppConfig.phoneAuthRequest, method: .post, parameters: parameters){ result in
+        APICaller.sheared.callAPI(endpoint: AppConfig.phoneAuthRequest, method: .post, parameters: parameters){ (result: Result<ResponseModel, CustomError>) in
             switch result{
             case .failure(let error):
                 switch error {
@@ -544,7 +541,7 @@ extension FindUserViewController {
             "authnumber": authnumber as AnyHashable,
             "type": type.authTypeDescription as AnyHashable
         ]
-        authCaller.callAPI(endpoint: AppConfig.phoneAuthCheck, method: .post, parameters: parameters){ result in
+        APICaller.sheared.callAPI(endpoint: AppConfig.phoneAuthCheck, method: .post, parameters: parameters){ (result: Result<ResponseModel, CustomError>) in
             switch result {
             case .failure(let error):
                 print("error: \(error)")
@@ -569,7 +566,7 @@ extension FindUserViewController {
             let parameter: [String: AnyHashable] = [
                 "phonenumber": phonennumber as AnyHashable
             ]
-            self.findEmailCaller.callAPI(endpoint: AppConfig.findEmail, method: .post, parameters: parameter){ result in
+            APICaller.sheared.callAPI(endpoint: AppConfig.findEmail, method: .post, parameters: parameter){ (result: Result<FindEmailModel, CustomError>) in
                 switch result{
                 case .failure(let error):
                     switch error {
@@ -815,7 +812,7 @@ extension FindUserViewController {
             "password": self.passwordTextField?.text as AnyHashable,
             "phonenumber": self.phonenumber as AnyHashable
         ]
-        authCaller.callAPI(endpoint: AppConfig.updatePassword, method: .post, parameters: parameters){ result in
+        APICaller.sheared.callAPI(endpoint: AppConfig.updatePassword, method: .post, parameters: parameters){ (result: Result<ResponseModel, CustomError>) in
             switch result {
             case .failure(let error):
                 switch error{

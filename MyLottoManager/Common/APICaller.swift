@@ -1,5 +1,7 @@
 import Foundation
-class APICaller<Model: Decodable> {
+class APICaller {
+    
+    static let sheared = APICaller()
     
     let baseURL = AppConfig.appURL
     
@@ -7,7 +9,7 @@ class APICaller<Model: Decodable> {
     
     var refresh_token: String?
     
-    func callAPI(endpoint: String, method: HTTPMethod, parameters: [String: AnyHashable] = [:],  existRefreshToken: Bool = false, isAuth: Bool = true, completion: @escaping (Result<Model,CustomError>) -> Void){
+    func callAPI<Model: Decodable>(endpoint: String, method: HTTPMethod, parameters: [String: AnyHashable] = [:],  existRefreshToken: Bool = false, isAuth: Bool = true, completion: @escaping (Result<Model,CustomError>) -> Void){
         
         guard var urlComponents = URLComponents(string: baseURL + endpoint) else {
             completion(.failure(CustomError.invalidURL))

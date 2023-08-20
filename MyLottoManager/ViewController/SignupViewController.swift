@@ -37,9 +37,6 @@ class SignupViewController: UIViewController {
     let trailing = -50
     let leading = 50
     
-    private let authCaller = APICaller<ResponseModel>()
-    private let signupCaller = APICaller<SignupModel>()
-    
     private let validator = Validator()
     
     private var customNavigationBar: CustomNavigationBar?
@@ -159,8 +156,7 @@ class SignupViewController: UIViewController {
             "type": AuthType.SIGNUP.authTypeDescription as AnyHashable,
         ]
         
-        self.authCaller.callAPI(endpoint: AppConfig.phoneAuthCheck, method: .post, parameters: parameters, isAuth: false ){result in
-            
+        APICaller.sheared.callAPI(endpoint: AppConfig.phoneAuthCheck, method: .post, parameters: parameters, isAuth: false ){ (result: Result<ResponseModel, CustomError>) in
             switch result {
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -197,7 +193,7 @@ class SignupViewController: UIViewController {
             "name":self.nameTextField!.text as AnyHashable,
             "phonenumber":self.phonenumberTextField!.text as AnyHashable,
         ]
-        self.signupCaller.callAPI(endpoint: AppConfig.signupURL, method: .post, parameters: parameters, isAuth: false){ result in
+        APICaller.sheared.callAPI(endpoint: AppConfig.signupURL, method: .post, parameters: parameters, isAuth: false){ (result: Result<SignupModel, CustomError>) in
             switch result {
             case .failure(let error):
                 switch error {
@@ -270,7 +266,7 @@ extension SignupViewController {
             "type": AuthType.SIGNUP.authTypeDescription as AnyHashable,
         ]
         
-        self.authCaller.callAPI(endpoint: AppConfig.phoneAuthRequest, method: .post, parameters: parameters, isAuth: false) { result in
+        APICaller.sheared.callAPI(endpoint: AppConfig.phoneAuthRequest, method: .post, parameters: parameters, isAuth: false) { (result: Result<ResponseModel, CustomError>) in
             switch result {
             case .failure(let error):
                 switch error {

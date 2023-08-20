@@ -9,8 +9,6 @@ class LoginViewController: UIViewController {
     private var findUserLabel: UILabel?
     private var loginButton: UIButton?
     
-    private let loginCaller = APICaller<LoginModel>()
-    
     private let validator = Validator()
     
     override func viewDidLoad() {
@@ -213,7 +211,7 @@ class LoginViewController: UIViewController {
                 "email":email,
                 "password":password
             ]
-            self.loginCaller.callAPI(endpoint: AppConfig.loginURL, method: .post, parameters: parameters, existRefreshToken: true, isAuth: false){ result in
+            APICaller.sheared.callAPI(endpoint: AppConfig.loginURL, method: .post, parameters: parameters, existRefreshToken: true, isAuth: false){ (result: Result<LoginModel, CustomError>) in
                 switch result {
                 case .failure(let error):
                     switch error {
@@ -267,8 +265,8 @@ class LoginViewController: UIViewController {
                     UserDefaults.standard.set(model.user.phonenumber, forKey: UserDefaults.userPhonenumberKey)
                     // 2.push main screen
                     DispatchQueue.main.async {
-                        let mainViewController = MainViewController()
-                        self.navigationController?.pushViewController( mainViewController, animated: true)
+                        let mainTabBarController = MainTabBarController()
+                        self.navigationController?.pushViewController( mainTabBarController, animated: true)
                     }
                     break
                 }
